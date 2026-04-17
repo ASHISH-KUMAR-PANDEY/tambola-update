@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tambola Update</title>
+<title>Live Tambola — Executive Update</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -17,127 +17,120 @@
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
   }
-  .deck {
-    height: 100vh;
-    width: 100vw;
-    position: relative;
-  }
+  .deck { height: 100vh; width: 100vw; position: relative; }
   .slide {
     position: absolute;
     inset: 0;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 6vh 8vw;
+    padding: 7vh 9vw;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.4s ease, transform 0.4s ease;
+    transition: opacity 0.45s ease, transform 0.45s ease;
     pointer-events: none;
     overflow-y: auto;
   }
-  .slide.active {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-  h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 0.4em; }
-  h2 { font-size: clamp(1.6rem, 3.2vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.6em; }
-  .eyebrow {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+  .slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .slide-num {
+    position: absolute;
+    top: 5vh; left: 9vw;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: #6366f1;
     text-transform: uppercase;
-    color: #8b5cf6;
-    margin-bottom: 1rem;
   }
-  p, li { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: #b8b8c2; }
-  .subtitle { font-size: clamp(1.1rem, 1.6vw, 1.35rem); color: #9797a3; margin-bottom: 1.5em; font-weight: 400; }
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-  .stat {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.04));
-    border: 1px solid rgba(139, 92, 246, 0.2);
-    border-radius: 16px;
-    padding: 1.5rem 1.75rem;
-    transition: transform 0.2s ease, border 0.2s ease;
-  }
-  .stat:hover {
-    transform: translateY(-2px);
-    border-color: rgba(139, 92, 246, 0.4);
-  }
-  .stat .num {
-    font-size: clamp(1.8rem, 3vw, 2.5rem);
+  h1 {
+    font-size: clamp(2.4rem, 5.2vw, 4.2rem);
     font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 0.5em;
+  }
+  h2 {
+    font-size: clamp(1.1rem, 1.7vw, 1.45rem);
+    font-weight: 500;
+    color: #9797a3;
+    line-height: 1.5;
+    margin-bottom: 2em;
+    max-width: 48em;
+  }
+  .accent {
     background: linear-gradient(135deg, #a855f7, #6366f1);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .stat {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.04));
+    border: 1px solid rgba(139, 92, 246, 0.22);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+  }
+  .stat .num {
+    font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+    font-weight: 800;
+    color: #e8e8ec;
     letter-spacing: -0.02em;
     line-height: 1;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
   }
-  .stat .label { font-size: 0.95rem; color: #b8b8c2; line-height: 1.4; }
-  ul { list-style: none; margin-top: 1rem; }
+  .stat .label { font-size: 0.9rem; color: #9797a3; line-height: 1.4; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .card {
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.18);
+    border-radius: 14px;
+    padding: 1.5rem 1.6rem;
+  }
+  .card .card-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #a855f7;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+  }
+  .card .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #e8e8ec;
+    margin-bottom: 0.5rem;
+  }
+  .card .card-desc { font-size: 0.92rem; color: #9797a3; line-height: 1.5; }
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+  ul { list-style: none; }
   ul li {
-    padding-left: 1.8rem;
+    padding-left: 1.6rem;
     position: relative;
     margin-bottom: 0.9rem;
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
+    color: #c8c8d0;
+    line-height: 1.55;
   }
   ul li::before {
     content: "";
     position: absolute;
-    left: 0;
-    top: 0.6em;
-    width: 8px;
-    height: 8px;
+    left: 0; top: 0.65em;
+    width: 6px; height: 6px;
     background: linear-gradient(135deg, #a855f7, #6366f1);
     border-radius: 50%;
   }
   ul li strong { color: #e8e8ec; font-weight: 600; }
-  .flow {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-top: 1.5rem;
-  }
-  .flow-step {
-    background: rgba(139, 92, 246, 0.05);
-    border: 1px solid rgba(139, 92, 246, 0.15);
-    border-radius: 12px;
-    padding: 1.25rem;
-    position: relative;
-  }
-  .flow-step .step-num {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #8b5cf6;
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-  }
-  .flow-step .step-title {
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #e8e8ec;
-    margin-bottom: 0.4rem;
-  }
-  .flow-step .step-desc {
-    font-size: 0.9rem;
-    color: #9797a3;
-    line-height: 1.45;
-  }
-  .quote {
-    font-style: italic;
-    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
-    color: #d0d0d8;
-    border-left: 3px solid #8b5cf6;
-    padding-left: 1.5rem;
-    margin: 1.5rem 0;
-    line-height: 1.5;
-  }
   .nav {
     position: fixed;
     bottom: 2rem;
@@ -147,18 +140,15 @@
     align-items: center;
     gap: 1rem;
     z-index: 10;
-    background: rgba(20, 20, 28, 0.75);
+    background: rgba(20, 20, 28, 0.78);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 100px;
     padding: 0.6rem 1.25rem;
   }
   .nav button {
-    background: none;
-    border: none;
-    color: #e8e8ec;
-    cursor: pointer;
-    font-size: 1.1rem;
+    background: none; border: none; color: #e8e8ec;
+    cursor: pointer; font-size: 1.1rem;
     padding: 0.25rem 0.6rem;
     border-radius: 8px;
     transition: background 0.15s ease;
@@ -172,64 +162,54 @@
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 0.4rem;
+    gap: 0.45rem;
     z-index: 10;
   }
   .dot {
-    width: 6px;
-    height: 6px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.15);
     transition: background 0.2s ease, width 0.2s ease;
     cursor: pointer;
   }
-  .dot.active { background: #8b5cf6; width: 24px; border-radius: 3px; }
-  .accent { color: #a855f7; font-weight: 600; }
-  .tag {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #a855f7;
-    background: rgba(168, 85, 247, 0.12);
-    padding: 0.3rem 0.75rem;
-    border-radius: 100px;
-    margin-left: 0.6rem;
-    vertical-align: middle;
-  }
-  .title-slide {
-    align-items: center;
-    text-align: center;
-    justify-content: center;
-  }
-  .title-slide h1 {
-    font-size: clamp(3rem, 7vw, 6rem);
-    background: linear-gradient(135deg, #a855f7, #6366f1, #8b5cf6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .title-slide .subtitle { font-size: clamp(1.2rem, 2vw, 1.6rem); }
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: start;
-  }
-  @media (max-width: 768px) {
-    .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
-    .slide { padding: 4vh 6vw; }
-  }
+  .dot.active { background: #8b5cf6; width: 28px; border-radius: 4px; }
   .progress-bar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     height: 2px;
     background: linear-gradient(90deg, #a855f7, #6366f1);
-    transition: width 0.4s ease;
+    transition: width 0.45s ease;
     z-index: 20;
   }
+  .pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.12);
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    padding: 0.35rem 0.85rem;
+    border-radius: 100px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-top: 1rem;
+  }
+  @media (max-width: 900px) { .split { grid-template-columns: 1fr; gap: 1.25rem; } }
+  .split h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #a855f7;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.02em;
+  }
+  .split p { font-size: 1.05rem; line-height: 1.55; color: #c8c8d0; }
 </style>
 </head>
 <body>
@@ -237,146 +217,95 @@
 <div class="dots" id="dots"></div>
 <div class="deck" id="deck">
 
-  <!-- 1: Title -->
-  <div class="slide title-slide active">
-    <div class="eyebrow">Product Update · April 2026</div>
-    <h1>Tambola</h1>
-    <p class="subtitle">Sunday lives, daily solo, weekly games — and a new play-first funnel for dormant users.</p>
-  </div>
-
-  <!-- 2: Sunday Live -->
-  <div class="slide">
-    <div class="eyebrow">Sunday Live Tambola</div>
-    <h2>A habit, not just a game.</h2>
-    <div class="stats">
-      <div class="stat"><div class="num">6,764</div><div class="label">unique players across 6 Sundays</div></div>
-      <div class="stat"><div class="num">50%</div><div class="label">come back for their 2nd Sunday</div></div>
-      <div class="stat"><div class="num">40%</div><div class="label">steady return week-over-week after that</div></div>
-      <div class="stat"><div class="num">46%</div><div class="label">of Sunday players also play daily solo</div></div>
-    </div>
-  </div>
-
-  <!-- 3: Daily Solo -->
-  <div class="slide">
-    <div class="eyebrow">Daily Solo Tambola</div>
-    <h2>8 in 10 finish the game.</h2>
-    <div class="stats">
-      <div class="stat"><div class="num">3,802</div><div class="label">unique users</div></div>
-      <div class="stat"><div class="num">4,897</div><div class="label">games played</div></div>
-      <div class="stat"><div class="num">2,353</div><div class="label">marked at least 1 number</div></div>
-      <div class="stat"><div class="num">21%</div><div class="label">faster first win with optimized tickets</div></div>
-    </div>
-    <p style="margin-top: 2rem;">Less waiting, more dopamine. <span class="accent">80% of users who hit their first win play all the way through.</span></p>
-  </div>
-
-  <!-- 4: Pipeline -->
-  <div class="slide">
-    <div class="eyebrow">Solo ↔ Sunday Pipeline</div>
-    <h2>Daily play keeps them warm for Sunday.</h2>
-    <div class="stats" style="grid-template-columns: 1fr;">
-      <div class="stat">
-        <div class="num">62%</div>
-        <div class="label">of users who complete a solo game show up for Sunday live</div>
+  <!-- Slide 1: Why Live Tambola -->
+  <div class="slide active">
+    <div class="slide-num">01 · Why</div>
+    <h1>Why <span class="accent">Live Tambola</span>.</h1>
+    <h2>Content alone doesn't bring dormant users back. We needed a reason for them to open the app — a reason that repeats, rewards, and travels.</h2>
+    <div class="split">
+      <div>
+        <h3>The problem</h3>
+        <p>Users don't return for content they can watch anywhere. Notifications don't pull them back. Free content pulls them in but doesn't convert.</p>
+      </div>
+      <div>
+        <h3>The bet</h3>
+        <p>A <strong style="color:#e8e8ec">weekly appointment</strong> creates anticipation. Winning creates stickiness. Cash prizes create urgency. Put them together — and you get a repeatable habit loop that spills into content consumption.</p>
       </div>
     </div>
-    <p style="margin-top: 1.5rem;">Solo isn't a side feature — it's the engine that bridges the 6-day gap between Sundays.</p>
   </div>
 
-  <!-- 5: Weekly -->
+  <!-- Slide 2: How it works -->
   <div class="slide">
-    <div class="eyebrow">Individual Weekly Game</div>
-    <h2>Launched Monday <span class="tag">New</span></h2>
-    <p class="subtitle">15 numbers drip in every day. Mark at your own pace. Play passively, return daily.</p>
-    <div class="stats">
-      <div class="stat"><div class="num">18%</div><div class="label">Day 1 → Day 2 return (3 days of data)</div></div>
+    <div class="slide-num">02 · How it works</div>
+    <h1>The format.</h1>
+    <h2>A three-layer engagement system. Live on Sunday, solo every day, a passive weekly grind for those who can't commit to an hour.</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-tag">Sunday Live</div>
+        <div class="card-title">Live Tambola</div>
+        <div class="card-desc">8 PM Sunday. YouTube-hosted live draws. 5 prize categories: First 5, Top Line, Middle Line, Bottom Line, Full House. Cash prizes for every category.</div>
+      </div>
+      <div class="card">
+        <div class="card-tag">Daily</div>
+        <div class="card-title">Solo Tambola</div>
+        <div class="card-desc">New game daily. Same 5 categories. Leaderboard of fastest winners across the week. Winners recognised in the Sunday legends section.</div>
+      </div>
+      <div class="card">
+        <div class="card-tag">New · Weekly</div>
+        <div class="card-title">Individual Game</div>
+        <div class="card-desc">15 numbers drip in every day, Monday to Sunday. Mark at your own pace. No time pressure. Built for passive, low-effort return.</div>
+      </div>
     </div>
-    <p style="margin-top: 1.5rem; color: #8b8b95;">Early data. Full read in 2 weeks.</p>
+    <p style="margin-top: 1.8rem; font-size: 1rem; color: #8b8b95;">Rewards range from <span class="accent">cash prizes for Sunday winners</span> to <span class="accent">subscription extensions</span> and <span class="accent">recognition</span> for top solo players.</p>
   </div>
 
-  <!-- 6: Content Impact -->
+  <!-- Slide 3: Impact -->
   <div class="slide">
-    <div class="eyebrow">Impact on Content Watching</div>
-    <h2>Tambola pulls users into the app — they stay for the content.</h2>
+    <div class="slide-num">03 · Impact</div>
+    <h1>The numbers that matter.</h1>
+    <h2>6 Sundays in. Clear retention, cross-format engagement, and measurable lift in content watching on non-game days.</h2>
+    <div class="stats" style="margin-bottom: 1.5rem;">
+      <div class="stat"><div class="num">6,764</div><div class="label">unique players over 6 Sundays</div></div>
+      <div class="stat"><div class="num">50%</div><div class="label">return for their 2nd Sunday</div></div>
+      <div class="stat"><div class="num">40%</div><div class="label">steady return week-over-week after</div></div>
+      <div class="stat"><div class="num">62%</div><div class="label">solo-completers show up on Sunday</div></div>
+    </div>
     <ul>
-      <li>Sunday players watch <strong>5–20pp higher rates</strong> every day of the following week vs. subscribers who watched on Sunday but didn't play.</li>
-      <li>Lift holds <strong>Monday through Saturday</strong>, consistent across all 6 games.</li>
-      <li>Tambola is doing the pull. Content does the retention.</li>
+      <li><strong>5–20pp higher content watching</strong> every day of the following week for Sunday players vs subscribers who watched but didn't play.</li>
+      <li><strong>46% of Sunday players</strong> also play daily solo — the habit loop is forming.</li>
+      <li><strong>8 in 10 solo users who start, finish.</strong> 21% faster first-win with the new optimised ticket algorithm.</li>
     </ul>
   </div>
 
-  <!-- 7: Dormant users - the bet -->
+  <!-- Slide 4: Way forward -->
   <div class="slide">
-    <div class="eyebrow">New Intervention · Dormant & Uninstalled Users</div>
-    <h2>Let them win first. Ask later.</h2>
-    <div class="quote">
-      These users aren't coming back because we ask.<br>
-      They'll come back if we let them win something first, somewhere easy — then put the reward behind the app.
-    </div>
-    <p>Tambola is a great fit: <span class="accent">50%</span> of users who start a game finish it. <span class="accent">80%</span> of users who hit their first win play it all the way through.</p>
-    <p style="margin-top: 1rem;">People don't walk away from a game they're already winning.</p>
-  </div>
-
-  <!-- 8: The flow -->
-  <div class="slide">
-    <div class="eyebrow">The Flow</div>
-    <h2>Play → Win → Login → Win → Install.</h2>
-    <div class="flow">
-      <div class="flow-step">
-        <div class="step-num">STEP 1</div>
-        <div class="step-title">Just let them in</div>
-        <div class="step-desc">Click ad → land on Tambola → play instantly. No login. No OTP.</div>
+    <div class="slide-num">04 · Way forward</div>
+    <h1>What's next.</h1>
+    <h2>Doubling down on retention mechanics, testing a new top-of-funnel for dormant users, and scaling what already works.</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-tag">Live · Testing</div>
+        <div class="card-title">Dormant-user funnel</div>
+        <div class="card-desc">Play-first experience for ad-traffic. No login, no OTP — just play. Login gate fires after first win, install gate after second. Early data: users converting through both walls.</div>
       </div>
-      <div class="flow-step">
-        <div class="step-num">STEP 2</div>
-        <div class="step-title">First win → login</div>
-        <div class="step-desc">A wall asks them to log in to keep playing. They've already felt the win — the ask doesn't feel like a tax.</div>
+      <div class="card">
+        <div class="card-tag">Live · Scaling</div>
+        <div class="card-title">Individual Weekly Game</div>
+        <div class="card-desc">Launched this Monday. 18% Day 1 → Day 2 return on 3 days of data. Full read in two weeks. If it holds, this becomes our daily-touch layer.</div>
       </div>
-      <div class="flow-step">
-        <div class="step-num">STEP 3</div>
-        <div class="step-title">Login, then back in</div>
-        <div class="step-desc">Progress carries over. Same ticket. Same win. No reset.</div>
-      </div>
-      <div class="flow-step">
-        <div class="step-num">STEP 4</div>
-        <div class="step-title">Second win → install</div>
-        <div class="step-desc">Install wall fires. They've won twice. Installing feels like claiming what they earned.</div>
+      <div class="card">
+        <div class="card-tag">Planned</div>
+        <div class="card-title">More formats, better rewards</div>
+        <div class="card-desc">More game formats, deeper reward structure, personalised prize tiers. Continue pushing the Tambola → Content habit loop that's already driving retention lift.</div>
       </div>
     </div>
-  </div>
-
-  <!-- 9: Why this, not the old way -->
-  <div class="slide">
-    <div class="eyebrow">Why It Works</div>
-    <h2>We tried "no friction" before. It didn't convert.</h2>
-    <div class="two-col">
-      <div>
-        <h3 style="font-size: 1.2rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 600;">Free content (past attempt)</h3>
-        <p>Got people in the door. Didn't convert.</p>
-        <p style="margin-top: 0.8rem; color: #8b8b95;">Watching is passive. Nothing to lose by walking away.</p>
-      </div>
-      <div>
-        <h3 style="font-size: 1.2rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 600;">Tambola (now)</h3>
-        <p>Once you're winning, <span class="accent">walking away costs you something.</span></p>
-        <p style="margin-top: 0.8rem; color: #8b8b95;">Every ask backed by something the user just felt.</p>
-      </div>
-    </div>
-    <div class="quote" style="margin-top: 2rem;">
-      Each ask earned in order: play → win → login → win → install.
-    </div>
-  </div>
-
-  <!-- 10: Closing -->
-  <div class="slide title-slide">
-    <div class="eyebrow">What's Next</div>
-    <h1 style="font-size: clamp(2rem, 4.5vw, 3.5rem);">Learnings &amp; improvements<br>incoming in this thread.</h1>
-    <p class="subtitle" style="margin-top: 1.5rem;">Watch this space.</p>
   </div>
 
 </div>
 
 <div class="nav">
   <button id="prev" aria-label="Previous">←</button>
-  <span class="counter"><span id="curr">1</span> / <span id="total">10</span></span>
+  <span class="counter"><span id="curr">1</span> / <span id="total">4</span></span>
   <button id="next" aria-label="Next">→</button>
 </div>
 
@@ -393,7 +322,6 @@
 
   counterTotal.textContent = total;
 
-  // Build dots
   for (let i = 0; i < total; i++) {
     const dot = document.createElement('div');
     dot.className = 'dot' + (i === 0 ? ' active' : '');
@@ -416,6 +344,7 @@
   }
 
   progress.style.width = (1 / total * 100) + '%';
+  prevBtn.disabled = true;
 
   prevBtn.addEventListener('click', () => go(idx - 1));
   nextBtn.addEventListener('click', () => go(idx + 1));
@@ -427,7 +356,6 @@
     if (e.key === 'End') { e.preventDefault(); go(total - 1); }
   });
 
-  // Touch swipe
   let touchStartX = 0;
   document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
   document.addEventListener('touchend', (e) => {
