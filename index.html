@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tambola Update</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    background: #0a0a0f;
+    color: #e8e8ec;
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  .deck {
+    height: 100vh;
+    width: 100vw;
+    position: relative;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6vh 8vw;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+    overflow-y: auto;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 0.4em; }
+  h2 { font-size: clamp(1.6rem, 3.2vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 0.6em; }
+  .eyebrow {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8b5cf6;
+    margin-bottom: 1rem;
+  }
+  p, li { font-size: clamp(1rem, 1.35vw, 1.2rem); line-height: 1.55; color: #b8b8c2; }
+  .subtitle { font-size: clamp(1.1rem, 1.6vw, 1.35rem); color: #9797a3; margin-bottom: 1.5em; font-weight: 400; }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .stat {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(99, 102, 241, 0.04));
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem 1.75rem;
+    transition: transform 0.2s ease, border 0.2s ease;
+  }
+  .stat:hover {
+    transform: translateY(-2px);
+    border-color: rgba(139, 92, 246, 0.4);
+  }
+  .stat .num {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+  .stat .label { font-size: 0.95rem; color: #b8b8c2; line-height: 1.4; }
+  ul { list-style: none; margin-top: 1rem; }
+  ul li {
+    padding-left: 1.8rem;
+    position: relative;
+    margin-bottom: 0.9rem;
+  }
+  ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 8px;
+    height: 8px;
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    border-radius: 50%;
+  }
+  ul li strong { color: #e8e8ec; font-weight: 600; }
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .flow-step {
+    background: rgba(139, 92, 246, 0.05);
+    border: 1px solid rgba(139, 92, 246, 0.15);
+    border-radius: 12px;
+    padding: 1.25rem;
+    position: relative;
+  }
+  .flow-step .step-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #8b5cf6;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+  .flow-step .step-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #e8e8ec;
+    margin-bottom: 0.4rem;
+  }
+  .flow-step .step-desc {
+    font-size: 0.9rem;
+    color: #9797a3;
+    line-height: 1.45;
+  }
+  .quote {
+    font-style: italic;
+    font-size: clamp(1.15rem, 1.8vw, 1.4rem);
+    color: #d0d0d8;
+    border-left: 3px solid #8b5cf6;
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    line-height: 1.5;
+  }
+  .nav {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 10;
+    background: rgba(20, 20, 28, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 100px;
+    padding: 0.6rem 1.25rem;
+  }
+  .nav button {
+    background: none;
+    border: none;
+    color: #e8e8ec;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+  }
+  .nav button:hover { background: rgba(139, 92, 246, 0.15); }
+  .nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .counter { font-size: 0.9rem; color: #9797a3; font-variant-numeric: tabular-nums; font-weight: 500; }
+  .dots {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.4rem;
+    z-index: 10;
+  }
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    transition: background 0.2s ease, width 0.2s ease;
+    cursor: pointer;
+  }
+  .dot.active { background: #8b5cf6; width: 24px; border-radius: 3px; }
+  .accent { color: #a855f7; font-weight: 600; }
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #a855f7;
+    background: rgba(168, 85, 247, 0.12);
+    padding: 0.3rem 0.75rem;
+    border-radius: 100px;
+    margin-left: 0.6rem;
+    vertical-align: middle;
+  }
+  .title-slide {
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+  }
+  .title-slide h1 {
+    font-size: clamp(3rem, 7vw, 6rem);
+    background: linear-gradient(135deg, #a855f7, #6366f1, #8b5cf6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .title-slide .subtitle { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .two-col { grid-template-columns: 1fr; gap: 1.5rem; }
+    .slide { padding: 4vh 6vw; }
+  }
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #a855f7, #6366f1);
+    transition: width 0.4s ease;
+    z-index: 20;
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<div class="dots" id="dots"></div>
+<div class="deck" id="deck">
+
+  <!-- 1: Title -->
+  <div class="slide title-slide active">
+    <div class="eyebrow">Product Update · April 2026</div>
+    <h1>Tambola</h1>
+    <p class="subtitle">Sunday lives, daily solo, weekly games — and a new play-first funnel for dormant users.</p>
+  </div>
+
+  <!-- 2: Sunday Live -->
+  <div class="slide">
+    <div class="eyebrow">Sunday Live Tambola</div>
+    <h2>A habit, not just a game.</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">6,764</div><div class="label">unique players across 6 Sundays</div></div>
+      <div class="stat"><div class="num">50%</div><div class="label">come back for their 2nd Sunday</div></div>
+      <div class="stat"><div class="num">40%</div><div class="label">steady return week-over-week after that</div></div>
+      <div class="stat"><div class="num">46%</div><div class="label">of Sunday players also play daily solo</div></div>
+    </div>
+  </div>
+
+  <!-- 3: Daily Solo -->
+  <div class="slide">
+    <div class="eyebrow">Daily Solo Tambola</div>
+    <h2>8 in 10 finish the game.</h2>
+    <div class="stats">
+      <div class="stat"><div class="num">3,802</div><div class="label">unique users</div></div>
+      <div class="stat"><div class="num">4,897</div><div class="label">games played</div></div>
+      <div class="stat"><div class="num">2,353</div><div class="label">marked at least 1 number</div></div>
+      <div class="stat"><div class="num">21%</div><div class="label">faster first win with optimized tickets</div></div>
+    </div>
+    <p style="margin-top: 2rem;">Less waiting, more dopamine. <span class="accent">80% of users who hit their first win play all the way through.</span></p>
+  </div>
+
+  <!-- 4: Pipeline -->
+  <div class="slide">
+    <div class="eyebrow">Solo ↔ Sunday Pipeline</div>
+    <h2>Daily play keeps them warm for Sunday.</h2>
+    <div class="stats" style="grid-template-columns: 1fr;">
+      <div class="stat">
+        <div class="num">62%</div>
+        <div class="label">of users who complete a solo game show up for Sunday live</div>
+      </div>
+    </div>
+    <p style="margin-top: 1.5rem;">Solo isn't a side feature — it's the engine that bridges the 6-day gap between Sundays.</p>
+  </div>
+
+  <!-- 5: Weekly -->
+  <div class="slide">
+    <div class="eyebrow">Individual Weekly Game</div>
+    <h2>Launched Monday <span class="tag">New</span></h2>
+    <p class="subtitle">15 numbers drip in every day. Mark at your own pace. Play passively, return daily.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">18%</div><div class="label">Day 1 → Day 2 return (3 days of data)</div></div>
+    </div>
+    <p style="margin-top: 1.5rem; color: #8b8b95;">Early data. Full read in 2 weeks.</p>
+  </div>
+
+  <!-- 6: Content Impact -->
+  <div class="slide">
+    <div class="eyebrow">Impact on Content Watching</div>
+    <h2>Tambola pulls users into the app — they stay for the content.</h2>
+    <ul>
+      <li>Sunday players watch <strong>5–20pp higher rates</strong> every day of the following week vs. subscribers who watched on Sunday but didn't play.</li>
+      <li>Lift holds <strong>Monday through Saturday</strong>, consistent across all 6 games.</li>
+      <li>Tambola is doing the pull. Content does the retention.</li>
+    </ul>
+  </div>
+
+  <!-- 7: Dormant users - the bet -->
+  <div class="slide">
+    <div class="eyebrow">New Intervention · Dormant & Uninstalled Users</div>
+    <h2>Let them win first. Ask later.</h2>
+    <div class="quote">
+      These users aren't coming back because we ask.<br>
+      They'll come back if we let them win something first, somewhere easy — then put the reward behind the app.
+    </div>
+    <p>Tambola is a great fit: <span class="accent">50%</span> of users who start a game finish it. <span class="accent">80%</span> of users who hit their first win play it all the way through.</p>
+    <p style="margin-top: 1rem;">People don't walk away from a game they're already winning.</p>
+  </div>
+
+  <!-- 8: The flow -->
+  <div class="slide">
+    <div class="eyebrow">The Flow</div>
+    <h2>Play → Win → Login → Win → Install.</h2>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="step-num">STEP 1</div>
+        <div class="step-title">Just let them in</div>
+        <div class="step-desc">Click ad → land on Tambola → play instantly. No login. No OTP.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">STEP 2</div>
+        <div class="step-title">First win → login</div>
+        <div class="step-desc">A wall asks them to log in to keep playing. They've already felt the win — the ask doesn't feel like a tax.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">STEP 3</div>
+        <div class="step-title">Login, then back in</div>
+        <div class="step-desc">Progress carries over. Same ticket. Same win. No reset.</div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">STEP 4</div>
+        <div class="step-title">Second win → install</div>
+        <div class="step-desc">Install wall fires. They've won twice. Installing feels like claiming what they earned.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9: Why this, not the old way -->
+  <div class="slide">
+    <div class="eyebrow">Why It Works</div>
+    <h2>We tried "no friction" before. It didn't convert.</h2>
+    <div class="two-col">
+      <div>
+        <h3 style="font-size: 1.2rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 600;">Free content (past attempt)</h3>
+        <p>Got people in the door. Didn't convert.</p>
+        <p style="margin-top: 0.8rem; color: #8b8b95;">Watching is passive. Nothing to lose by walking away.</p>
+      </div>
+      <div>
+        <h3 style="font-size: 1.2rem; color: #a855f7; margin-bottom: 0.8rem; font-weight: 600;">Tambola (now)</h3>
+        <p>Once you're winning, <span class="accent">walking away costs you something.</span></p>
+        <p style="margin-top: 0.8rem; color: #8b8b95;">Every ask backed by something the user just felt.</p>
+      </div>
+    </div>
+    <div class="quote" style="margin-top: 2rem;">
+      Each ask earned in order: play → win → login → win → install.
+    </div>
+  </div>
+
+  <!-- 10: Closing -->
+  <div class="slide title-slide">
+    <div class="eyebrow">What's Next</div>
+    <h1 style="font-size: clamp(2rem, 4.5vw, 3.5rem);">Learnings &amp; improvements<br>incoming in this thread.</h1>
+    <p class="subtitle" style="margin-top: 1.5rem;">Watch this space.</p>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous">←</button>
+  <span class="counter"><span id="curr">1</span> / <span id="total">10</span></span>
+  <button id="next" aria-label="Next">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  const counterCurr = document.getElementById('curr');
+  const counterTotal = document.getElementById('total');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  const progress = document.getElementById('progress');
+  const dotsContainer = document.getElementById('dots');
+  let idx = 0;
+
+  counterTotal.textContent = total;
+
+  // Build dots
+  for (let i = 0; i < total; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', () => go(i));
+    dotsContainer.appendChild(dot);
+  }
+  const dots = document.querySelectorAll('.dot');
+
+  function go(n) {
+    if (n < 0 || n >= total) return;
+    slides[idx].classList.remove('active');
+    dots[idx].classList.remove('active');
+    idx = n;
+    slides[idx].classList.add('active');
+    dots[idx].classList.add('active');
+    counterCurr.textContent = idx + 1;
+    progress.style.width = ((idx + 1) / total * 100) + '%';
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+  }
+
+  progress.style.width = (1 / total * 100) + '%';
+
+  prevBtn.addEventListener('click', () => go(idx - 1));
+  nextBtn.addEventListener('click', () => go(idx + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(idx + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(idx - 1); }
+    if (e.key === 'Home') { e.preventDefault(); go(0); }
+    if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+  });
+
+  // Touch swipe
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', (e) => {
+    const diff = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diff) > 50) go(diff < 0 ? idx + 1 : idx - 1);
+  });
+</script>
+</body>
+</html>
